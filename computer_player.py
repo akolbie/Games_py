@@ -43,10 +43,39 @@ def select_move(current_board, comp_symbol, play_symbol):
     if check_lose(current_board, list_open_squares, play_symbol):
         return *check_lose(current_board, list_open_squares, play_symbol), comp_symbol
     
-    move_ratings = make_dict(list_open_squares)
-    
-    for move in list_open_squares:
-
-    # add open squares to a dict eg [1,2]:0
-    #   dict is used to track move "value"
     return
+
+def get_best_move(board, comp_sym, play_sym):
+    best_score, best_move = -10, None
+    temp_board = Board()
+    for move in get_open_squares(board):
+        temp_board.board = [row[:] for row in board.board]
+        temp_board.add_move(*move, comp_sym)
+        score = minimax(temp_board, False, comp_sym, play_sym, 1)
+        if score > best_score:
+            best_score = score
+            best_move = move
+    return best_move
+
+def minimax(board, maximizing, comp_sym, play_sym, depth):
+    if board.check_winner() == (True, comp_sym): #computer wins
+        return 1 / depth
+    elif board.check_winner()[0]: #player wins
+        return -1 / depth
+    elif len(get_open_squares(board)) == 0: #draw
+        return 0
+
+    moves = get_open_squares(board)
+    scores = []
+    temp_board = Board()
+    for move in moves:
+        temp_board.board = [row[:] for row in board.board]
+        if maximizing:
+            player = comp_sym
+        else:
+            player = play_sym
+        temp_board.add_move(*move, player)
+        scores.append(minimax(temp_board, not maximizing, comp_sym, play_sym, depth + 1))
+    if maximizing:
+        return max(scores)
+    return min(scores)

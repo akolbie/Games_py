@@ -57,11 +57,15 @@ class Board():
                     return True, place_holder
         
         if self.board[0][0] == self.board[1][1] == self.board[2][2] != " ":
-            print(f"{self.board[0][0]} is the winner")
             return True, self.board[1][1]
         if self.board[0][2] == self.board[1][1] == self.board[2][0] != " ":
-            print(f"{self.board[1][1]} is the winner")
             return True, self.board[1][1]
         
         return False, " "
 
+def create_board():
+    a = Board()
+    a.board[0] = ["X","O"," "]
+    a.board[1] = ["O"," "," "]
+    a.board[2] = ["O"," ","X"]
+    return a
