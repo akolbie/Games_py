@@ -21,36 +21,6 @@ class Player():
                 if square == self.symbol:
                     self.add_move([index_row, index_column])
 
-    
-    def check_win(self, board):
-        directions = [[0, 1], [1, 0], [1, 1], [1, -1]]
-        squares_in_row = 1
-        for square in self.check_squares:
-            current_square = square
-            for direction in directions:
-                direct_multi = 1 
-                while True:
-                    current_square = [current_square[0] + (direction[0] * direct_multi), 
-                                      current_square[1] + (direction[1] * direct_multi)]
-                    try:
-                        if board.board[current_square[0]][current_square[1]] == self.symbol:
-                            squares_in_row += 1
-                            if squares_in_row == 4:
-                                return True
-                        elif direct_multi == 1:
-                            direct_multi = -1 
-                        else:
-                            break
-                    except IndexError:
-                        if direct_multi == 1:
-                            direct_multi = -1
-                        else:
-                            break
-        return False
-            
-
-    
-
 class Board():
     def __init__(self, player1, player2):
         self.rows = 6
@@ -81,11 +51,10 @@ class Board():
             print("Selected Column does not exist")
             return
         
-        for i in range(7):
-            print(self.rows - i - 1)
-            if self.board[self.rows - i - 1][column] == " ":
-                self.board[self.rows - i - 1][column] = player.symbol
-                player.add_move([self.rows - i - 1, column])
+        for i in range(6):
+            if self.board[self.rows - i - 1][self.column] == " ":
+                self.board[self.rows - i - 1][self.column] = player.symbol
+                player.add_move([self.rows - i - 1, self.column])
                 return
         print("This column is already full")
 
@@ -97,6 +66,37 @@ class Board():
         return self.open_moves
 
     def check_winner(self):
-        for player in self.players:
-            if player.check_win(self):
-                print(f"Player {player.symbol} wins")
+        directions = [[0, 1], [1, 0], [1, 1], [1, -1]]
+        self.important_squares = [[2, 0], [2, 1], [2, 2], [2, 3], 
+                                  [2, 4], [2, 5], [2, 6], [0, 3],
+                                  [1, 3], [3, 3], [4, 3], [5, 3]]
+        squares_in_row = 1
+        for square in self.important_squares:
+            if self.board[square[0]][square[1]] == " ":
+                continue
+            current_square = square
+            square_value = self.board[square[0]][square[1]]
+            for direction in directions:
+                direct_multi = 1
+                squares_in_row = 1
+                current_square = square
+                while True:
+                    current_square = [current_square[0] + (direction[0] * direct_multi), 
+                                      current_square[1] + (direction[1] * direct_multi)]
+                    try:
+                        if self.board[current_square[0]][current_square[1]] == square_value:
+                            print(f"{square} {direction} {current_square} {squares_in_row}")
+                            squares_in_row += 1
+                            if squares_in_row == 4:
+                                return True, square_value
+                        elif direct_multi == 1:
+                            direct_multi = -1
+                            current_square = square
+                        else:
+                            break
+                    except IndexError:
+                        if direct_multi == 1:
+                            direct_multi = -1
+                        else:
+                            break
+        return False, " "

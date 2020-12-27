@@ -5,8 +5,8 @@ p2 = board.Player("O")
 
 a = board.Board(p1, p2)
 
-a.board[0] = ["X", "X", "X", "X", " ", " ", " "]
-p1.get_current_moves(a)
+a.board[0] = [" ", " ", "X", "X", "X", " ", " "]
+a.check_winner()
 
 print(a)
-print(p1.check_win(a))
+print(a.check_winner())
