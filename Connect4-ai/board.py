@@ -83,9 +83,11 @@ class Board():
                 while True:
                     current_square = [current_square[0] + (direction[0] * direct_multi), 
                                       current_square[1] + (direction[1] * direct_multi)]
+                    if current_square[0] < 0 or current_square[1] < 0:
+                        break
                     try:
+                        print(f"{square} + {direct_multi} * {direction} = {current_square}, {squares_in_row}")
                         if self.board[current_square[0]][current_square[1]] == square_value:
-                            print(f"{square} {direction} {current_square} {squares_in_row}")
                             squares_in_row += 1
                             if squares_in_row == 4:
                                 return True, square_value
@@ -97,6 +99,9 @@ class Board():
                     except IndexError:
                         if direct_multi == 1:
                             direct_multi = -1
+                            current_square = square
                         else:
+                            print("Break index")
                             break
+                        
         return False, " "

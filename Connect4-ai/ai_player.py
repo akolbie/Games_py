@@ -21,8 +21,7 @@ def get_best_move(board, comp_player, human_player):
 
 
 def minimax(board, maximizing, comp_player, human_player, depth):
-    print(depth)
-    if depth == 4:
+    if depth == 6:
         return 0
     if board.check_winner() == (True, comp_player.symbol):
         return 10 / depth
