@@ -27,6 +27,10 @@ class Board():
         self.columns = 7
         self.players = [player1, player2]
         self.board = [[" " for i in range(self.columns)] for j in range(self.rows)]
+        self.ordered_moves = []
+        self.important_squares = [[2, 0], [2, 1], [2, 2], [2, 3], 
+                                  [2, 4], [2, 5], [2, 6], [0, 3],
+                                  [1, 3], [3, 3], [4, 3], [5, 3]]
     
     def __str__(self):
         to_return = ""
@@ -55,8 +59,13 @@ class Board():
             if self.board[self.rows - i - 1][self.column] == " ":
                 self.board[self.rows - i - 1][self.column] = player.symbol
                 player.add_move([self.rows - i - 1, self.column])
+                self.ordered_moves.append([self.rows - i -1, self.column])
                 return
         print("This column is already full")
+
+    def del_last_move(self):
+        last_move = self.ordered_moves.pop()
+        self.board[last_move[0]][last_move[1]] = " "
 
     def get_moves(self):
         self.open_moves = []
@@ -67,9 +76,7 @@ class Board():
 
     def check_winner(self):
         directions = [[0, 1], [1, 0], [1, 1], [1, -1]]
-        self.important_squares = [[2, 0], [2, 1], [2, 2], [2, 3], 
-                                  [2, 4], [2, 5], [2, 6], [0, 3],
-                                  [1, 3], [3, 3], [4, 3], [5, 3]]
+
         squares_in_row = 1
         for square in self.important_squares:
             if self.board[square[0]][square[1]] == " ":
@@ -86,7 +93,6 @@ class Board():
                     if current_square[0] < 0 or current_square[1] < 0:
                         break
                     try:
-                        print(f"{square} + {direct_multi} * {direction} = {current_square}, {squares_in_row}")
                         if self.board[current_square[0]][current_square[1]] == square_value:
                             squares_in_row += 1
                             if squares_in_row == 4:
@@ -101,7 +107,6 @@ class Board():
                             direct_multi = -1
                             current_square = square
                         else:
-                            print("Break index")
                             break
                         
         return False, " "

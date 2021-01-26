@@ -7,11 +7,12 @@ def get_best_move(board, comp_player, human_player):
         return
     best_score, best_move = -100, None
     temp_board = Board(comp_player, human_player)
+    temp_board.board = [row[:] for row in board.board]
     
-    for move in board.get_moves():
-        temp_board.board = [row[:] for row in board.board]
+    for move in temp_board.get_moves():
         temp_board.add_move(move, comp_player)
         score = minimax(temp_board, False, comp_player, human_player, 1)
+        temp_board.del_last_move()
         if score > best_score:
             best_score = score
             best_move = move
@@ -21,7 +22,7 @@ def get_best_move(board, comp_player, human_player):
 
 
 def minimax(board, maximizing, comp_player, human_player, depth):
-    if depth == 6:
+    if depth == 7:
         return 0
     if board.check_winner() == (True, comp_player.symbol):
         return 10 / depth
@@ -32,16 +33,16 @@ def minimax(board, maximizing, comp_player, human_player, depth):
     
     moves = board.get_moves()
     scores = []
-    temp_board = Board(comp_player, human_player)
 
     for move in moves:
-        temp_board.board = [row[:] for row in board.board]
         if maximizing:
-            temp_board.add_move(move, comp_player)
-            scores.append(minimax(temp_board, not maximizing, comp_player, human_player, depth + 1))
+            board.add_move(move, comp_player)
+            scores.append(minimax(board, not maximizing, comp_player, human_player, depth + 1))
+            board.del_last_move()
         else:
-            temp_board.add_move(move, human_player)
-            scores.append(minimax(temp_board, not maximizing, comp_player, human_player, depth + 1))
+            board.add_move(move, human_player)
+            scores.append(minimax(board, not maximizing, comp_player, human_player, depth + 1))
+            board.del_last_move()
     if maximizing:
         return max(scores)
     return min(scores)
